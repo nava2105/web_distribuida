@@ -56,7 +56,7 @@ jobs:
             # Guardar el estado de PM2
             sudo pm2 save
             
-            sudo cd web_distribuida
-            sudo node app.js
+            cd web_distribuida
+            sudo node app.js > app.log 2>&1 &
             
             echo "Application is running in the background."
