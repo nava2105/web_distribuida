@@ -28,40 +28,58 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Detener y eliminar la aplicación si ya está en ejecución
-            pm2 delete my-app || echo "No existing process found"
-            
-            # Navegar al directorio de la aplicación
-            cd ${{ secrets.TARGET_DIR }}
+                    # Asegúrate de que PM2 esté instalado
+                    if ! command -v pm2 &> /dev/null; then
+                    echo "PM2 no está instalado. Instalando..."
+                    sudo npm install -g pm2
+                    fi
+                    
+                    # Detener y eliminar la aplicación si ya está en ejecución
+                    pm2 delete my-app || echo "No existing process found"
+                    
+                    # Navegar al directorio de la aplicación
+                    cd ${{ secrets.TARGET_DIR }}
             
             # Instalar Node.js
-            echo "Instalando Node.js..."
-            curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
-            sudo yum install -y nodejs
+                    echo "Instalando Node.js..."
+                    curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+                    sudo yum install -y nodejs
             
             # Actualizar el código desde el repositorio
-            sudo git pull origin main
+                    echo "Actualizando el código desde el repositorio..."
+                    sudo git pull origin main
             
             # Instalar dependencias
-            sudo npm install
+                    echo "Instalando dependencias..."
+                    sudo npm install
             
             # Construir la aplicación (si es necesario)
-            sudo npm run build
-            
-            # Asegúrate de que PM2 esté instalado en tu instancia de EC2. Si no está instalado, puedes agregar el siguiente comando en el script antes de usar PM2
-            # sudo npm install -g pm2
+                    echo "Construyendo la aplicación..."
+                    sudo npm run build
             
             # Iniciar la aplicación con PM2 usando node app.js
-            sudo pm2 start node --name "my-app" -- app.js
+                    echo "Iniciando la aplicación con PM2..."
+                    sudo pm2 start node --name "my-app" -- app.js
             
             # Guardar el estado de PM2
-            sudo pm2 save
+                    sudo pm2 save
             
-            # Detener la aplicación antes de iniciar una nueva instancia
-            pm2 stop my-app || echo "No existing process found"
+            # Encuentra el PID del proceso que está usando el puerto 3000
+                    PID=$(lsof -t -i:3000)
+            
+            # Verifica si se encontró un proceso
+                    if [ -n "$PID" ]; then
+                    echo "Deteniendo el proceso que está usando el puerto 3000 (PID: $PID)..."
+            # Detener el proceso
+                    kill -9 $PID
+                    echo "Proceso detenido."
+                    else
+                    echo "No hay ningún proceso usando el puerto 3000."
+                    fi
             
             # Iniciar la aplicación en segundo plano
-            cd web_distribuida
-            sudo node app.js > app.log 2>&1 &
-            
-            echo "Application is running in the background."
+                    cd web_distribuida
+                    sudo node app.js > app.log 2>&1 &
+                    
+                    echo "La aplicación se está ejecutando en segundo plano." ```yaml
+                    echo "La aplicación se está ejecutando en segundo plano."
