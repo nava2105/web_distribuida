@@ -58,13 +58,13 @@ jobs:
             sudo pm2 save
             
             # Encuentra el PID del proceso que está usando el puerto 3000
-            PID=$(lsof -t -i:3000)
+            PID=$(sudo lsof -t -i:80)
             
             # Verifica si se encontró un proceso
             if [ -n "$PID" ]; then
               echo "Deteniendo el proceso que está usando el puerto 3000 (PID: $PID)..."
               # Detener el proceso
-              kill -9 $PID
+              sudo kill -9 $PID
               echo "Proceso detenido."
             else
               echo "No hay ningún proceso usando el puerto 3000."
