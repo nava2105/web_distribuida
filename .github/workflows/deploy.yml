@@ -48,6 +48,8 @@ jobs:
             # Construir la aplicación (si es necesario)
             sudo npm run build
             
+            # Asegúrate de que PM2 esté instalado en tu instancia de EC2. Si no está instalado, puedes agregar el siguiente comando en el script antes de usar PM2
+            # sudo npm install -g pm2
             # Iniciar la aplicación con PM2 usando node app.js
             sudo pm2 start node --name "my-app" -- app.js
             
