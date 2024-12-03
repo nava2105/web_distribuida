@@ -22,7 +22,7 @@ const getLocalIP = () => {
 app.get('/', (req, res) => {
     const localIP = getLocalIP();
     res.send(`
-        <h1>Hola Mundo</h1>
+        <h1>Hola Mundo Desde AWS</h1>
         <p>Servidor corriendo en el puerto: ${PORT}</p>
         <p>Dirección IP local: ${localIP}</p>
     `);
