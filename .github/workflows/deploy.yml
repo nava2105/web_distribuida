@@ -1,0 +1,57 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: Deploy to EC2
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST_DNS }}
+          REMOTE_USER: ${{ secrets.EC2_USER }}
+          TARGET: ${{ secrets.TARGET_DIR }}
+
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Detener y eliminar la aplicación si ya está en ejecución
+            pm2 delete my-app || echo "No existing process found"
+            
+            # Navegar al directorio de la aplicación
+            cd ${{ secrets.TARGET_DIR }}
+            
+            # Instalar Node.js
+            echo "Instalando Node.js..."
+            curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+            sudo yum install -y nodejs
+            
+            # Actualizar el código desde el repositorio
+            sudo git pull origin main
+            
+            # Instalar dependencias
+            sudo npm install
+            
+            # Construir la aplicación (si es necesario)
+            sudo npm run build
+            
+            # Iniciar la aplicación con PM2 usando node app.js
+            sudo pm2 start node --name "my-app" -- app.js
+            
+            # Guardar el estado de PM2
+            sudo pm2 save
+            
+            echo "Application is running in the background."
