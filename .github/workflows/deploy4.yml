@@ -1,0 +1,64 @@
+name: Deploy to EC2
+
+on:
+  repository_dispatch:
+    types:
+      - dockerhub_deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST_DNS4 }}
+          REMOTE_USER: ${{ secrets.EC2_USER }}
+          TARGET: ${{ secrets.TARGET_DIR }}
+
+      - name: Executing remote Docker commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS4 }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Verificar si Docker está instalado
+            echo "Verificando si Docker está instalado..."
+            if ! [ -x "$(command -v docker)" ]; then
+              echo "Docker no está instalado. Procediendo a instalar Docker..."
+              sudo apt update
+              sudo apt install -y docker.io
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              echo "Docker instalado correctamente."
+            else
+              echo "Docker ya está instalado."
+            fi
+
+            # Detener y eliminar el contenedor existente
+            echo "Deteniendo y eliminando el contenedor existente..."
+            sudo docker stop distribuida_web || echo "No hay un contenedor en ejecución."
+            sudo docker rm distribuida_web || echo "No hay un contenedor para eliminar."
+
+            # Descargar la última versión de la imagen
+            echo "Descargando la última versión de la imagen de Docker..."
+            sudo docker pull na4va4/distribuida_web:latest
+            
+            # Verificar si algún proceso usa el puerto 80
+            PID=$(sudo lsof -t -i:80)
+            if [ -n "$PID" ]; then
+              echo "Deteniendo el proceso que está usando el puerto 80 (PID: $PID)..."
+              sudo kill -9 $PID
+              echo "Proceso detenido."
+            else
+              echo "No hay ningún proceso usando el puerto 80."
+            fi
+
+            # Ejecutar el contenedor en el puerto 80
+            echo "Ejecutando el contenedor en el puerto 80..."
+            sudo docker run -d --name distribuida_web -p 80:80 na4va4/distribuida_web:latest > app.log 2>&1 &
+
+            echo "El contenedor distribuida_web está corriendo en el puerto 80."
