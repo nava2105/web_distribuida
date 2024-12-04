@@ -1,0 +1,91 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a; /* Color de fondo gris super oscuro */
+    color: white; /* Color del texto en blanco */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centrar verticalmente */
+    align-items: center; /* Centrar horizontalmente */
+    min-height: 100vh; /* Asegura que el body ocupe al menos el 100% de la altura de la ventana */
+}
+
+/* Estilos para el encabezado */
+header {
+    background-color: #333; /* Color de fondo del encabezado en gris oscuro */
+    color: white; /* Color del texto */
+    padding: 10px 0; /* Espaciado interno */
+    text-align: center; /* Centrar texto */
+    position: fixed; /* Fijar el encabezado en la parte superior */
+    width: 100%; /* Ancho completo */
+    top: 0; /* Posición en la parte superior */
+    z-index: 1000; /* Asegurarse de que esté por encima de otros elementos */
+}
+
+/* Estilos para el contenido principal */
+main {
+    margin-top: 120px; /* Espacio para el encabezado fijo */
+    text-align: center; /* Centrar el contenido */
+    flex: 1; /* Permitir que el main ocupe el espacio restante */
+    display: flex; /* Usar flexbox */
+    flex-direction: column; /* Colocar elementos en columna */
+    justify-content: center;
+}
+
+header h1 {
+    color: white; /* Color del texto del encabezado */
+}
+
+h1 {
+    color: white; /* Color del texto en blanco */
+}
+
+h2 {
+    color: #ccc; /* Color del texto en gris claro */
+}
+
+p {
+    font-size: 18px;
+    color: #ddd; /* Color del texto en gris claro */
+}
+
+#port, #local-ip {
+    font-weight: bold;
+    color: brown; /* Puedes cambiar esto a blanco o gris claro si lo prefieres */
+}
+
+/* Estilos para el botón */
+button {
+    background-color: #444; /* Color de fondo del botón en gris oscuro */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Mantén el alto ajustado */
+    text-align: center; /* Centrar texto */
+    text-decoration: none; /* Sin subrayado */
+    display: inline-block; /* Mostrar como bloque en línea */
+    font-size: 18px; /* Tamaño de fuente */
+    margin: 10px 0; /* Margen superior e inferior */
+    cursor: pointer; /* Cambiar cursor al pasar el ratón */
+    border-radius: 5px; /* Bordes redondeados */
+    width: auto; /* Ajusta el ancho automáticamente al contenido */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+button i {
+    margin-right: 8px; /* Espacio entre el ícono y el texto */
+}
+
+button:hover {
+    background-color: #555; /* Color de fondo al pasar el ratón */
+}
+
+/* Estilos para el footer */
+footer {
+    background-color: #333; /* Color de fondo del footer en gris oscuro */
+    color: white; /* Color del texto */
+    text-align: center; /* Centrar texto */
+    padding: 10px 0; /* Espaciado interno */
+    width: 100%;
+}
