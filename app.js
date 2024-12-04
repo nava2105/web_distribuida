@@ -1,5 +1,6 @@
 const express = require('express');
 const os = require('os');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 80;
 
@@ -18,15 +19,21 @@ const getLocalIP = () => {
     return localIP || 'No se pudo determinar la dirección IP';
 };
 
-// Ruta principal
+// Middleware para servir archivos estáticos
+app.use(express.static(path.join(__dirname)));
+
+// Ruta para servir el archivo index.html
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Ruta para obtener información del servidor
+app.get('/info', (req, res) => {
     const localIP = getLocalIP();
-    res.send(`
-        <h1>Hola Mundo Desde AWS</h1>
-        <h2>Deploy posterior a cambios en test</h2>
-        <p>Servidor corriendo en el puerto: ${PORT}</p>
-        <p>Dirección IP local: ${localIP}</p>
-    `);
+    res.json({
+        port: PORT,
+        localIP: localIP
+    });
 });
 
 // Hacer que el servidor escuche en todas las direcciones IP
