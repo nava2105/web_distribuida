@@ -36,7 +36,5 @@ app.get('/info', (req, res) => {
     });
 });
 
-// Hacer que el servidor escuche en todas las direcciones IP
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+// Exporta solo la aplicación sin iniciar el servidor
+module.exports = app;
