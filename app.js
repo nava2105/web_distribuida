@@ -2,7 +2,7 @@ const express = require('express');
 const os = require('os');
 const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 3000;
 
 // Obtener la dirección IP local
 const getLocalIP = () => {
@@ -36,5 +36,11 @@ app.get('/info', (req, res) => {
     });
 });
 
-// Exporta solo la aplicación sin iniciar el servidor
-module.exports = app;
+// Solo inicia el servidor si se ejecuta directamente
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app; // Exporta la app para las pruebas

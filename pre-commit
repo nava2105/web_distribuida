@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "Ejecutando pruebas antes del commit..."
+
+# Ejecutar pruebas
+npm test
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+  echo "Las pruebas han fallado. Cancela el commit."
+  exit 1
+fi
+
+echo "Pruebas exitosas. Procediendo con el commit."
+exit 0
