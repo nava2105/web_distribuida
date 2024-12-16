@@ -90,7 +90,7 @@ Server: [http://localhost:3000](http://localhost:3000)
 Pull the image from Docker-hub
 
 ```
-docker pull na4va4/js_mqtt
+docker pull na4va4/web_distribuida
 ```
 
 Start a container from the image
